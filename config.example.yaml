@@ -48,6 +48,7 @@ audio:
 youtube:
   privacy: public
   category_id: "2"
+  made_for_kids: false   # true flags the video as made for kids, which disables comments
   # {tags} = hashtags from the tags list; {bio_link} also supported.
   # If you omit {tags}, the hashtags are appended to the end automatically.
   description_template: |

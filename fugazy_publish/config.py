@@ -81,6 +81,7 @@ class YouTubeConfig:
     privacy_status: str = "public"
     default_description: str = ""
     default_tags: list[str] = field(default_factory=list)
+    made_for_kids: bool = False  # True disables comments (COPPA); keep False
 
 
 @dataclass
@@ -295,6 +296,7 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
             privacy_status=str(privacy),
             default_description=str(description),
             default_tags=tags,
+            made_for_kids=bool(youtube.get("made_for_kids", False)),
         ),
         social=SocialConfig(
             platforms=list(platforms),

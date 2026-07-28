@@ -96,7 +96,11 @@ def upload_video(
             "tags": tags if tags is not None else config.youtube.default_tags,
             "categoryId": config.youtube.category_id,
         },
-        "status": {"privacyStatus": config.youtube.privacy_status},
+        "status": {
+            "privacyStatus": config.youtube.privacy_status,
+            # Explicitly declare audience: made-for-kids disables comments (COPPA).
+            "selfDeclaredMadeForKids": config.youtube.made_for_kids,
+        },
     }
 
     media = MediaFileUpload(
