@@ -115,3 +115,7 @@ py publish.py run.mp4 --dry-run
 1. Upload full video to YouTube (OAuth)
 2. FFmpeg trims teaser with overlay text
 3. Native APIs post teaser to TikTok and Instagram
+
+## License
+
+[MIT](LICENSE) © Isaac Karrer
