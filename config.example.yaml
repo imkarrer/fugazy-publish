@@ -48,10 +48,14 @@ audio:
 youtube:
   privacy: public
   category_id: "2"
+  # {tags} = hashtags from the tags list; {bio_link} also supported.
+  # If you omit {tags}, the hashtags are appended to the end automatically.
   description_template: |
     Autocross onboard run.
 
     Subscribe for more: https://youtube.com/@fugazymiata
+
+    {tags}
 
 captions:
   tiktok: |

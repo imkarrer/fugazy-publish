@@ -12,9 +12,23 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
-from fugazy_publish.config import AppConfig, credentials_dir
+from fugazy_publish.config import AppConfig, credentials_dir, format_hashtags
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+
+
+def build_description(config: AppConfig) -> str:
+    """Build the YouTube description, substituting {bio_link}/{tags} and
+    appending hashtags when the template has no {tags} placeholder."""
+    text = (config.youtube.default_description or "").replace(
+        "{bio_link}", config.bio_link
+    )
+    hashtags = format_hashtags(config.youtube.default_tags or config.tags)
+    if "{tags}" in text:
+        return text.replace("{tags}", hashtags)
+    if hashtags:
+        return f"{text.rstrip()}\n\n{hashtags}" if text.strip() else hashtags
+    return text
 
 
 def _token_path(config: AppConfig) -> Path:
@@ -78,7 +92,7 @@ def upload_video(
     body = {
         "snippet": {
             "title": title,
-            "description": description or config.youtube.default_description,
+            "description": description if description is not None else build_description(config),
             "tags": tags if tags is not None else config.youtube.default_tags,
             "categoryId": config.youtube.category_id,
         },
