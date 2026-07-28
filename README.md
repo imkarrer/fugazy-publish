@@ -29,6 +29,10 @@ py auth_social.py instagram
 
 4. For **new** YouTube uploads: put Google OAuth JSON at `credentials/client_secret.json`
 
+## YouTube integration setup
+
+**Full step-by-step guide: [docs/youtube-setup.md](docs/youtube-setup.md)** — Google Cloud project, enabling YouTube Data API v3, OAuth consent + Desktop client, first-run authorization, and quota. (Needed only for new uploads; promoting existing videos needs no YouTube credentials, and no GitHub Pages is required.)
+
 ## Social platform setup
 
 **Full step-by-step guide: [docs/social-setup.md](docs/social-setup.md)** — covers creating the TikTok and Meta developer accounts/apps, scopes, redirect URIs, and one-time OAuth authorization.
