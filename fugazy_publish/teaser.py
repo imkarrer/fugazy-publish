@@ -162,7 +162,6 @@ def _fit_overlay_layout(
 
 def _build_drawtext_filters(
     overlay: OverlayConfig,
-    start: float,
     *,
     lines: list[str],
     font_size: int,
@@ -170,7 +169,12 @@ def _build_drawtext_filters(
     frame_height: int,
 ) -> str:
     font = _ffmpeg_path(overlay.font_file)
-    end = start + overlay.show_seconds
+    # The teaser is trimmed with `-ss` before `-i`, which resets the output
+    # timeline to 0. So the overlay window is relative to the teaser start, not
+    # the source's start_seconds (otherwise a non-zero start_seconds pushes the
+    # overlay past the end of the clip and it never shows).
+    show_start = 0.0
+    show_end = show_start + overlay.show_seconds
     line_height = font_size + line_spacing
     block_height = len(lines) * line_height - line_spacing
     top = _block_top_margin(overlay, frame_height, block_height)
@@ -184,7 +188,7 @@ def _build_drawtext_filters(
             f":fontsize={font_size}:fontcolor={overlay.font_color}"
             f":borderw=2:bordercolor=black"
             f":x=(w-text_w)/2:y={y_pos}"
-            f":enable='between(t,{start},{end})'"
+            f":enable='between(t,{show_start},{show_end})'"
         )
     return ",".join(filters)
 
@@ -318,7 +322,6 @@ def create_teaser(
         if lines:
             vf = _build_drawtext_filters(
                 overlay,
-                start,
                 lines=lines,
                 font_size=font_size,
                 line_spacing=line_spacing,
