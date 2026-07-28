@@ -1,0 +1,5 @@
+﻿credentials/
+output/
+__pycache__/
+config.yaml
+.env

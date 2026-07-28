@@ -1,0 +1,88 @@
+﻿# Copy to config.yaml and edit for your channel.
+
+bio_link: https://lnk.bio/your-handle
+
+tags:
+  - autocross
+  - miata
+  - fugazymiata
+
+teaser:
+  start_seconds: 0
+  duration_seconds: 15
+  overlay:
+    enabled: true
+    link: "youtube.com/@FugazyMiata"
+    text: "Full run on YouTube — link in bio"
+    font_size: 28
+    font_color: "white"
+    position: bottom_center
+    x: "(w-text_w)/2"
+    y: "h-60"
+    show_seconds: 3
+    font_file: "C:/Windows/Fonts/arial.ttf"
+
+audio:
+  # Wind-noise cleanup so exhaust + passengers cut through onboard footage.
+  # Applies to the social teaser and (when clean_youtube) the full YouTube run.
+  enabled: true
+  clean_youtube: true     # also clean the full-length YouTube upload (video is copied, only audio re-encoded)
+  highpass_hz: 120        # roll off sub-bass wind rumble (0 disables)
+  lowpass_hz: 0           # optional top-end roll off (0 disables)
+  noise_reduction_db: 12  # afftdn strength (0.01-97); raise for gustier runs
+  noise_floor_db: -25
+  track_noise: true       # adapt to changing wind between corners
+  boost_quiet: true       # compress to bring up exhaust/voices
+  compress_threshold_db: -24
+  compress_ratio: 3
+  normalize: true         # even out final loudness
+  target_loudness: -16
+  notch:
+    # Surgical cut for a fixed-frequency camera whine (e.g. GoPro wind DSP).
+    # Retune freq_hz for your camera; set enabled: false to drop it.
+    enabled: true
+    freq_hz: 3700         # center of the whine to cut
+    width_hz: 700         # band width around it to attenuate
+    gain_db: -14          # cut depth (negative = attenuate)
+
+youtube:
+  privacy: public
+  category_id: "2"
+  description_template: |
+    Autocross onboard run.
+
+    Subscribe for more: https://youtube.com/@fugazymiata
+
+captions:
+  tiktok: |
+    New autocross run — full onboard.
+    Full run on YouTube: {bio_link}
+    {tags}
+  instagram: |
+    New autocross run — full onboard.
+    Full run on YouTube: {bio_link}
+    {tags}
+
+social:
+  platforms:
+    - tiktok
+    - instagram
+  first_comment: "Full run on YouTube: {bio_link}"
+
+retries:
+  min_api_interval_seconds: 10
+  max_attempts: 8
+  initial_seconds: 10
+  max_seconds: 600
+
+tiktok:
+  post_mode: inbox
+  privacy_level: PUBLIC_TO_EVERYONE
+
+instagram:
+  media_type: REELS
+  share_to_feed: true
+
+paths:
+  credentials_dir: credentials
+  output_dir: output

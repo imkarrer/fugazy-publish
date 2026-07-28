@@ -1,0 +1,10 @@
+﻿pyyaml
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
+requests
+cryptography
+fastapi
+uvicorn
+python-multipart
+yt-dlp
