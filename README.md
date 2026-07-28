@@ -31,6 +31,8 @@ py auth_social.py instagram
 
 ## Social platform setup
 
+**Full step-by-step guide: [docs/social-setup.md](docs/social-setup.md)** — covers creating the TikTok and Meta developer accounts/apps, scopes, redirect URIs, and one-time OAuth authorization.
+
 | Platform | Portal | Credentials | Auth command |
 |----------|--------|-------------|--------------|
 | **TikTok** | [developers.tiktok.com](https://developers.tiktok.com/) | `tiktok_app.json`, `tiktok_token.json` | `py auth_social.py tiktok` |
