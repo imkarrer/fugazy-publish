@@ -1,0 +1,562 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "schema-version": "1.16.0",
+    "install": {
+      "dejavu_fonts": {
+        "pkg-path": "dejavu_fonts"
+      },
+      "ffmpeg": {
+        "pkg-path": "ffmpeg"
+      },
+      "python": {
+        "pkg-path": "python312"
+      },
+      "uv": {
+        "pkg-path": "uv"
+      }
+    },
+    "vars": {
+      "UV_PYTHON_DOWNLOADS": "never"
+    },
+    "hook": {
+      "on-activate": "  export FUGAZY_FONT_FILE=\"$FLOX_ENV/share/fonts/truetype/DejaVuSans.ttf\"\n\n  venv=\"$FLOX_ENV_CACHE/venv\"\n  if [ ! -d \"$venv\" ]; then\n    uv venv --quiet --python \"$(command -v python3)\" \"$venv\"\n  fi\n\n  stamp=\"$venv/.requirements.sha\"\n  want=\"$(cat \"$FLOX_ENV_PROJECT/requirements.txt\" \"$FLOX_ENV_PROJECT/requirements-dev.txt\" | shasum | cut -d' ' -f1)\"\n  if [ \"$(cat \"$stamp\" 2>/dev/null)\" != \"$want\" ]; then\n    echo \"Installing Python packages...\" >&2\n    VIRTUAL_ENV=\"$venv\" uv pip install --quiet \\\n      -r \"$FLOX_ENV_PROJECT/requirements.txt\" \\\n      -r \"$FLOX_ENV_PROJECT/requirements-dev.txt\" >&2 \\\n      && echo \"$want\" > \"$stamp\"\n  fi\n\n  mkdir -p \"$FLOX_ENV_PROJECT/credentials\" \"$FLOX_ENV_PROJECT/output\"\n  if [ ! -f \"$FLOX_ENV_PROJECT/config.yaml\" ]; then\n    cp \"$FLOX_ENV_PROJECT/config.example.yaml\" \"$FLOX_ENV_PROJECT/config.yaml\"\n    echo \"Created config.yaml from config.example.yaml\" >&2\n  fi\n"
+    },
+    "profile": {
+      "bash": "  source \"$FLOX_ENV_CACHE/venv/bin/activate\"\n",
+      "zsh": "  source \"$FLOX_ENV_CACHE/venv/bin/activate\"\n",
+      "fish": "  source \"$FLOX_ENV_CACHE/venv/bin/activate.fish\"\n"
+    },
+    "options": {
+      "systems": [
+        "aarch64-darwin",
+        "x86_64-darwin",
+        "aarch64-linux",
+        "x86_64-linux"
+      ]
+    },
+    "services": {
+      "web": {
+        "command": "  cd \"$FLOX_ENV_PROJECT\" && \"$FLOX_ENV_CACHE/venv/bin/uvicorn\" server:app --host 127.0.0.1 --port 8000\n"
+      }
+    }
+  },
+  "packages": [
+    {
+      "attr_path": "dejavu_fonts",
+      "broken": false,
+      "derivation": "/nix/store/l40j021lgdb91ibfsc9ggrz0jc3jwr82-dejavu-fonts-2.37.drv",
+      "description": "Typeface family based on the Bitstream Vera fonts",
+      "install_id": "dejavu_fonts",
+      "license": "Unspecified free software license",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "dejavu-fonts-2.37",
+      "pname": "dejavu_fonts",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:12:55.429418Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.37",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/4hy28cpxjkl0czyf5pk2vwbi4m8d555i-dejavu-fonts-2.37"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "dejavu_fonts",
+      "broken": false,
+      "derivation": "/nix/store/x8myk0qhj77g2qrr666i00s6lkhw5qms-dejavu-fonts-2.37.drv",
+      "description": "Typeface family based on the Bitstream Vera fonts",
+      "install_id": "dejavu_fonts",
+      "license": "Unspecified free software license",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "dejavu-fonts-2.37",
+      "pname": "dejavu_fonts",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:41:22.120169Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.37",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/spc75685f7229wh2sva3j4dn7vnr10r1-dejavu-fonts-2.37"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "dejavu_fonts",
+      "broken": false,
+      "derivation": "/nix/store/8cr43azl7kynm2bnk2sws8j42cldh8bc-dejavu-fonts-2.37.drv",
+      "description": "Typeface family based on the Bitstream Vera fonts",
+      "install_id": "dejavu_fonts",
+      "license": "Unspecified free software license",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "dejavu-fonts-2.37",
+      "pname": "dejavu_fonts",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:09:00.797713Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.37",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/498mb4dcz4dqm5fxirgfdphwndhndhk1-dejavu-fonts-2.37"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "dejavu_fonts",
+      "broken": false,
+      "derivation": "/nix/store/07h0sij88m20zsswa95swqzjr5jimd7i-dejavu-fonts-2.37.drv",
+      "description": "Typeface family based on the Bitstream Vera fonts",
+      "install_id": "dejavu_fonts",
+      "license": "Unspecified free software license",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "dejavu-fonts-2.37",
+      "pname": "dejavu_fonts",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:40:24.797902Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.37",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/8cs9jsy0bpajym7lf9qbps1h5snyjk9y-dejavu-fonts-2.37"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ffmpeg",
+      "broken": false,
+      "derivation": "/nix/store/0vxkmn9i3g88rqdr0d6kh21m98r1cxnh-ffmpeg-8.1.1.drv",
+      "description": "Complete, cross-platform solution to record, convert and stream audio and video",
+      "install_id": "ffmpeg",
+      "license": "[ LGPL-2.1-or-later, GPL-2.0-or-later, LGPL-3.0-or-later, GPL-3.0-or-later ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "ffmpeg-8.1.1",
+      "pname": "ffmpeg",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:12:55.803834Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "8.1.1",
+      "outputs_to_install": [
+        "bin",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/l0c20b9wh81cak8nnk4pwxwhhsp577l4-ffmpeg-8.1.1-bin",
+        "data": "/nix/store/xgb9780rjpbw7702y4ycg01zbzf4jb7s-ffmpeg-8.1.1-data",
+        "dev": "/nix/store/d3zpgpzialyiv78b139m890gaa7hgsc0-ffmpeg-8.1.1-dev",
+        "doc": "/nix/store/9bkyz9j3lcn8jb28mz1g8a4l1jhkd1f1-ffmpeg-8.1.1-doc",
+        "lib": "/nix/store/jliy906yi93mxgys7sqgd3anl490j4fi-ffmpeg-8.1.1-lib",
+        "man": "/nix/store/vm237ccn54k0x5qwymf9xjwh7nph2h8k-ffmpeg-8.1.1-man",
+        "out": "/nix/store/i50jrlq4sw4kn9z2liiadv77h4xak889-ffmpeg-8.1.1"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ffmpeg",
+      "broken": false,
+      "derivation": "/nix/store/af82c8z3fvysv4k3pclcs2s0g5lnj96v-ffmpeg-8.1.1.drv",
+      "description": "Complete, cross-platform solution to record, convert and stream audio and video",
+      "install_id": "ffmpeg",
+      "license": "[ LGPL-2.1-or-later, GPL-2.0-or-later, LGPL-3.0-or-later, GPL-3.0-or-later ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "ffmpeg-8.1.1",
+      "pname": "ffmpeg",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:41:22.693039Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "8.1.1",
+      "outputs_to_install": [
+        "bin",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/lm7aikd8jbm6hhxih8kwrmni01rgckk1-ffmpeg-8.1.1-bin",
+        "data": "/nix/store/02b61f6x23kxjdf4fmbvcimj2n568p3z-ffmpeg-8.1.1-data",
+        "dev": "/nix/store/x149ijysxai9dfb2h1hi68v3c5d6n7nl-ffmpeg-8.1.1-dev",
+        "doc": "/nix/store/840qf0mzkdvrd3xfq6kgdc1hkjxc40kl-ffmpeg-8.1.1-doc",
+        "lib": "/nix/store/glzzn6yqshd69cw795fwsivbnfm51hzj-ffmpeg-8.1.1-lib",
+        "man": "/nix/store/pwds4xbh51qllvy69pd4z0dw1kj5wzzg-ffmpeg-8.1.1-man",
+        "out": "/nix/store/2zlidx3zsxrn04yrnb0hgfgx4y34m66m-ffmpeg-8.1.1"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ffmpeg",
+      "broken": false,
+      "derivation": "/nix/store/0mhql2458qfwh3lcypb0cgb5clbdjay3-ffmpeg-8.1.1.drv",
+      "description": "Complete, cross-platform solution to record, convert and stream audio and video",
+      "install_id": "ffmpeg",
+      "license": "[ LGPL-2.1-or-later, GPL-2.0-or-later, LGPL-3.0-or-later, GPL-3.0-or-later ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "ffmpeg-8.1.1",
+      "pname": "ffmpeg",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:09:01.267559Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "8.1.1",
+      "outputs_to_install": [
+        "bin",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/l3vj6msfhnhz88cn80vzjzvb5wy7mbyh-ffmpeg-8.1.1-bin",
+        "data": "/nix/store/1rjnnsnkj8iyq24dvvvpci6pgdcgaqrr-ffmpeg-8.1.1-data",
+        "dev": "/nix/store/x2kv93yfmbnqr5m9i8kzpswp7c3698gx-ffmpeg-8.1.1-dev",
+        "doc": "/nix/store/42hwfxx0dxc0j43bs6761p2n5i5dmzx8-ffmpeg-8.1.1-doc",
+        "lib": "/nix/store/3z0gbnn9k7n562r8pqvpzlw2a1fmgl8r-ffmpeg-8.1.1-lib",
+        "man": "/nix/store/hizjzb0rsg89cw5vjk99yb94vs4jqbyy-ffmpeg-8.1.1-man",
+        "out": "/nix/store/wr163wqpwzbyj8bwmn0xgwdxwhqxgsza-ffmpeg-8.1.1"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "ffmpeg",
+      "broken": false,
+      "derivation": "/nix/store/ag98pa4lp7psyr32bax3f8h95fy52mf4-ffmpeg-8.1.1.drv",
+      "description": "Complete, cross-platform solution to record, convert and stream audio and video",
+      "install_id": "ffmpeg",
+      "license": "[ LGPL-2.1-or-later, GPL-2.0-or-later, LGPL-3.0-or-later, GPL-3.0-or-later ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "ffmpeg-8.1.1",
+      "pname": "ffmpeg",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:40:25.433200Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "8.1.1",
+      "outputs_to_install": [
+        "bin",
+        "bin",
+        "man"
+      ],
+      "outputs": {
+        "bin": "/nix/store/jfnnrn72slgs4ryx4g09lb97r193xddp-ffmpeg-8.1.1-bin",
+        "data": "/nix/store/50jahvv3gz6awqi0vh90sbyz894j95xh-ffmpeg-8.1.1-data",
+        "dev": "/nix/store/rqzfp09y7xgz03ci1l6xpzmpjh3vfca9-ffmpeg-8.1.1-dev",
+        "doc": "/nix/store/xp0q8rq7yx9xclzq05hf1kfzg5b2b3s1-ffmpeg-8.1.1-doc",
+        "lib": "/nix/store/9sbhlnp3pc0rbammkdgz4r9sl4dwb8jm-ffmpeg-8.1.1-lib",
+        "man": "/nix/store/5jmxk2dc87b03a5wxrwipsl4i8gn1sd9-ffmpeg-8.1.1-man",
+        "out": "/nix/store/by3i5wg6xh6ycskix22dz36qs3wvgmv1-ffmpeg-8.1.1"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python312",
+      "broken": false,
+      "derivation": "/nix/store/0scvydzrq1fwrd2g6qkxzwhfr74jb5bi-python3-3.12.13.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "python3-3.12.13",
+      "pname": "python312",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:13:37.152128Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.12.13",
+      "outputs_to_install": [
+        "out",
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/65p6ipj712fb5igr9w1h5k5cb7bymj42-python3-3.12.13"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python312",
+      "broken": false,
+      "derivation": "/nix/store/yyqr2z480r6c13skh5afgksphr2lfzdp-python3-3.12.13.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "python3-3.12.13",
+      "pname": "python312",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:42:22.928415Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.12.13",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/flj97zlvj6lz384brw7r5xa8hfmqbp2q-python3-3.12.13-debug",
+        "out": "/nix/store/wicbzqr46qxkh8nv4191fx8jdjrhya3i-python3-3.12.13"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python312",
+      "broken": false,
+      "derivation": "/nix/store/yli627mjkh5nykx1hv2yi5dnwh2n1692-python3-3.12.13.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "python3-3.12.13",
+      "pname": "python312",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:09:53.026944Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.12.13",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/afd3xzw8afbbr1dsqjvb6xg2a5gah4vg-python3-3.12.13"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "python312",
+      "broken": false,
+      "derivation": "/nix/store/39fqik436whzb2vs7xckk644zmc65fwg-python3-3.12.13.drv",
+      "description": "High-level dynamically-typed programming language",
+      "install_id": "python",
+      "license": "Python-2.0",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "python3-3.12.13",
+      "pname": "python312",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:41:29.493823Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "python3-3.12.13",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "debug": "/nix/store/sk5vgw3w0g8j9x0r261piqjczmgvqbb6-python3-3.12.13-debug",
+        "out": "/nix/store/d69yn2v7lzyh29rykj0ldnih67xps5s0-python3-3.12.13"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/czrpfss0v86ch66vdk3j22qndchnzw9b-uv-0.11.25.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "uv-0.11.25",
+      "pname": "uv",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:15:39.158658Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.11.25",
+      "outputs_to_install": [
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/f0kyi2i8xrfx7i405n5qy97kr0y5b2wv-uv-0.11.25"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/c4na34nqxj1n2ivgjiprkm9p1lrahfgy-uv-0.11.25.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "uv-0.11.25",
+      "pname": "uv",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T03:44:48.957401Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.11.25",
+      "outputs_to_install": [
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/8qd81vygrwkvp8ndg3ihj9wq3pl97hfd-uv-0.11.25"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/dlybxmsa3zfx8wbs9ccn0kafsq59qq6i-uv-0.11.25.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "uv-0.11.25",
+      "pname": "uv",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:12:23.334560Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.11.25",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/z4dcs3l0khfc2hky62bhy6v45lmysdvz-uv-0.11.25"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "uv",
+      "broken": false,
+      "derivation": "/nix/store/7qw31y4h8f29wc0f81jhm7wirnpdh8qf-uv-0.11.25.drv",
+      "description": "Extremely fast Python package installer and resolver, written in Rust",
+      "install_id": "uv",
+      "license": "[ Apache-2.0, MIT ]",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d407951447dcd00442e97087bf374aad70c04cea",
+      "name": "uv-0.11.25",
+      "pname": "uv",
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "rev_count": 1027867,
+      "rev_date": "2026-07-05T04:06:12Z",
+      "scrape_date": "2026-07-06T04:44:10.521793Z",
+      "stabilities": [
+        "staging",
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.11.25",
+      "outputs_to_install": [
+        "out",
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/cgvijxnmydknslkl368k4j4j43akvl8b-uv-0.11.25"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}

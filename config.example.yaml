@@ -20,7 +20,9 @@ teaser:
     x: "(w-text_w)/2"
     y: "h-60"
     show_seconds: 3
-    font_file: "C:/Windows/Fonts/arial.ttf"
+    # Optional. Omit to auto-detect: the Flox environment's bundled font,
+    # then Arial (Windows/macOS) or DejaVu Sans (Linux).
+    # font_file: "C:/Windows/Fonts/arial.ttf"
 
 audio:
   # Wind-noise cleanup so exhaust + passengers cut through onboard footage.

@@ -2,24 +2,64 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 from fugazy_publish.config import AppConfig, AudioConfig, OverlayConfig
+
+# Fallback overlay fonts per platform, tried in order when neither the config
+# nor the Flox environment (FUGAZY_FONT_FILE) supplies one that exists.
+PLATFORM_FONTS: dict[str, list[str]] = {
+    "win32": ["C:/Windows/Fonts/arial.ttf"],
+    "darwin": [
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf",
+    ],
+    "linux": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans.ttf",
+    ],
+}
 
 
 class FFmpegNotFoundError(RuntimeError):
     pass
 
 
+class FontNotFoundError(RuntimeError):
+    pass
+
+
 def check_ffmpeg() -> str:
     exe = shutil.which("ffmpeg")
     if not exe:
-        raise FFmpegNotFoundError(
-            "ffmpeg not found on PATH. Install with: winget install FFmpeg"
-        )
+        if sys.platform == "win32":
+            hint = "Install with: winget install FFmpeg"
+        else:
+            hint = "Run inside the Flox environment: flox activate"
+        raise FFmpegNotFoundError(f"ffmpeg not found on PATH. {hint}")
     return exe
+
+
+def resolve_font_file(configured: str, platform: str | None = None) -> str:
+    """Pick the overlay font: config, then FUGAZY_FONT_FILE, then OS defaults.
+
+    A configured path that does not exist on this machine (e.g. a Windows font
+    path in a config.yaml copied to a Mac) falls through rather than failing.
+    """
+    platform = platform or sys.platform
+    candidates = [configured, os.environ.get("FUGAZY_FONT_FILE", "")]
+    candidates += PLATFORM_FONTS.get(platform, [])
+    for candidate in candidates:
+        if candidate and Path(candidate).is_file():
+            return candidate
+    raise FontNotFoundError(
+        "No overlay font found. Set teaser.overlay.font_file in config.yaml "
+        "or run inside the Flox environment (flox activate)."
+    )
 
 
 def _escape_drawtext(text: str) -> str:
@@ -168,7 +208,7 @@ def _build_drawtext_filters(
     line_spacing: int,
     frame_height: int,
 ) -> str:
-    font = _ffmpeg_path(overlay.font_file)
+    font = _ffmpeg_path(resolve_font_file(overlay.font_file))
     # The teaser is trimmed with `-ss` before `-i`, which resets the output
     # timeline to 0. So the overlay window is relative to the teaser start, not
     # the source's start_seconds (otherwise a non-zero start_seconds pushes the

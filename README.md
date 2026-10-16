@@ -4,12 +4,27 @@ One-button YouTube funnel publisher for @fugazymiata: upload full autocross run 
 
 ## Requirements
 
-- Python 3.10+ (`py` launcher on Windows)
-- [ffmpeg](https://ffmpeg.org/) on PATH — `winget install FFmpeg`
 - Google Cloud project with **YouTube Data API v3** enabled (new uploads only)
 - Developer apps for **TikTok** and **Instagram** (native APIs — no Upload-Post)
+- macOS, Linux or WSL2: [Flox](https://flox.dev/docs/install-flox/install), which supplies everything else
+- Native Windows: Python 3.10+ (`py` launcher) and [ffmpeg](https://ffmpeg.org/) on PATH (`winget install FFmpeg`)
 
-## Quick setup
+## Quick setup: macOS, Linux, WSL2
+
+```bash
+flox activate                      # Python 3.12, ffmpeg, an overlay font, Python packages
+python publish.py run.mp4 --title "Run 3"
+```
+
+The first activation installs the Python packages and copies `config.example.yaml` to `config.yaml`. The web UI runs as a Flox service at http://127.0.0.1:8000:
+
+```bash
+flox activate --start-services
+```
+
+Run the tests with `flox activate -- pytest`. Then continue from step 1 below.
+
+## Quick setup: native Windows
 
 ```powershell
 cd C:\Users\isaac\fugazy-publish

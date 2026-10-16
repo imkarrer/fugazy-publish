@@ -24,7 +24,8 @@ class OverlayConfig:
     x: str = "(w-text_w)/2"
     y: str = "h-60"
     show_seconds: float = 3.0
-    font_file: str = "C:/Windows/Fonts/arial.ttf"
+    # Empty means auto-detect; see teaser.resolve_font_file.
+    font_file: str = ""
 
 
 @dataclass
