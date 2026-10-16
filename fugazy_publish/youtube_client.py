@@ -12,14 +12,19 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
-from fugazy_publish.config import AppConfig, credentials_dir, format_hashtags
+from fugazy_publish.config import AppConfig, apply_sponsor, credentials_dir, format_hashtags
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 
 def build_description(config: AppConfig) -> str:
     """Build the YouTube description, substituting {bio_link}/{tags} and
-    appending hashtags when the template has no {tags} placeholder."""
+    appending hashtags when the template has no {tags} placeholder, then
+    adding the sponsor line."""
+    return apply_sponsor(_description_body(config), config.sponsor_line)
+
+
+def _description_body(config: AppConfig) -> str:
     text = (config.youtube.default_description or "").replace(
         "{bio_link}", config.bio_link
     )

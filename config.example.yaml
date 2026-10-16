@@ -2,6 +2,10 @@
 
 bio_link: https://lnk.bio/your-handle
 
+# Credited at the end of every YouTube description and TikTok/Instagram
+# caption, or wherever a template puts {sponsor}. Set to "" to turn it off.
+sponsor_line: "Built with Flox: https://flox.dev"
+
 tags:
   - autocross
   - miata

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from fugazy_publish import instagram_client, tiktok_client
-from fugazy_publish.config import AppConfig, format_hashtags
+from fugazy_publish.config import AppConfig, apply_sponsor, format_hashtags
 
 
 def _substitute(
@@ -34,8 +34,13 @@ def fan_out(
     bio_link = config.bio_link
     hashtag_line = format_hashtags(config.tags)
 
-    tiktok_caption = _substitute(social.tiktok.title, youtube_url, bio_link, hashtag_line)
-    ig_caption = _substitute(config.instagram.caption, youtube_url, bio_link, hashtag_line)
+    sponsor = config.sponsor_line
+    tiktok_caption = apply_sponsor(
+        _substitute(social.tiktok.title, youtube_url, bio_link, hashtag_line), sponsor
+    )
+    ig_caption = apply_sponsor(
+        _substitute(config.instagram.caption, youtube_url, bio_link, hashtag_line), sponsor
+    )
 
     ig_first = _substitute(
         config.instagram.first_comment or social.first_comment,

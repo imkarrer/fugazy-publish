@@ -132,9 +132,23 @@ class PathsConfig:
     credentials_dir: str = "credentials"
 
 
+DEFAULT_SPONSOR_LINE = "Built with Flox: https://flox.dev"
+
+
+def apply_sponsor(text: str, line: str) -> str:
+    """Put the sponsor line at {sponsor}, or append it once if there is none."""
+    if "{sponsor}" in text:
+        return text.replace("{sponsor}", line)
+    if not line or line in text:
+        return text
+    return f"{text.rstrip()}\n\n{line}" if text.strip() else line
+
+
 @dataclass
 class AppConfig:
     bio_link: str = ""
+    # Credited on every YouTube description and social caption; "" turns it off.
+    sponsor_line: str = DEFAULT_SPONSOR_LINE
     tags: list[str] = field(default_factory=list)
     paths: PathsConfig = field(default_factory=PathsConfig)
     retry: RetryConfig = field(default_factory=RetryConfig)
@@ -273,6 +287,7 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
 
     return AppConfig(
         bio_link=str(data.get("bio_link", "")),
+        sponsor_line=str(data.get("sponsor_line", DEFAULT_SPONSOR_LINE) or ""),
         tags=tags,
         paths=PathsConfig(
             output_dir=str(paths.get("output_dir", "output")),
