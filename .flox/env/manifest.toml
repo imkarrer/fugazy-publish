@@ -32,6 +32,10 @@ on-activate = '''
       && echo "$want" > "$stamp"
   fi
 
+  # `flox activate -- cmd` runs no profile script, so put the venv on PATH
+  # here for it; interactive shells get the venv from [profile] below.
+  export PATH="$venv/bin:$PATH"
+
   mkdir -p "$FLOX_ENV_PROJECT/credentials" "$FLOX_ENV_PROJECT/output"
   if [ ! -f "$FLOX_ENV_PROJECT/config.yaml" ]; then
     cp "$FLOX_ENV_PROJECT/config.example.yaml" "$FLOX_ENV_PROJECT/config.yaml"
