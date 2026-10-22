@@ -1,0 +1,9 @@
+# bead-loop (github.com/imkarrer/bead-loop): which beads the loop works here and
+# how a worktree is proven. Stages, lanes and research come from the global
+# ~/.config/bead-loop/config.toml. The gate is CI's job verbatim (its Flox
+# hook builds the venv in the fresh worktree, about 7 s), so a worktree that
+# passes it is one CI would pass.
+label = "delegate:local"
+base = "main"
+gate = "flox activate -- pytest -ra"
+merge = "auto"                       # the watcher squash-merges once CI's `test` is green
