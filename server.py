@@ -198,13 +198,19 @@ async def publish_form(
                 elif not isinstance(override_dict, dict):
                     raise ValueError("Overrides must be a YAML mapping")
             
+            # Validate overrides before loading config
+            if override_dict is not None:
+                errors = override_errors(override_dict)
+                if errors:
+                    raise HTTPException(status_code=400, detail="\n".join(errors))
+            
             cfg = load_config(config_path, overrides=override_dict)
             result = publish(dest, title, config=cfg, dry_run=is_dry)
             body = json.dumps(result, indent=2, default=str)
             status = "OK"
         except ValueError as exc:  # Validation errors (like invalid override or profile)
-            body = str(exc)
-            status = "Error"
+            # This should be caught by HTTPException above, but kept for safety
+            raise HTTPException(status_code=400, detail=str(exc))
         except Exception as exc:  # noqa: BLE001
             body = str(exc)
             status = "Error"
@@ -234,6 +240,12 @@ async def promote_form(
             elif not isinstance(override_dict, dict):
                 raise ValueError("Overrides must be a YAML mapping")
         
+        # Validate overrides before loading config
+        if override_dict is not None:
+            errors = override_errors(override_dict)
+            if errors:
+                raise HTTPException(status_code=400, detail="\n".join(errors))
+        
         cfg = load_config(config_path, overrides=override_dict)
         result = promote_existing(
             youtube_url,
@@ -245,8 +257,8 @@ async def promote_form(
         body = json.dumps(result, indent=2, default=str)
         status = "OK"
     except ValueError as exc:  # Validation errors (like invalid override or profile)
-        body = str(exc)
-        status = "Error"
+        # This should be caught by HTTPException above, but kept for safety
+        raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:  # noqa: BLE001
         body = str(exc)
         status = "Error"
