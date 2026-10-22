@@ -11,6 +11,165 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config.yaml"
 
+# Per-video overrides are allowed for these YAML key paths.
+# These are the leaf keys that _from_dict reads, minus forbidden sections.
+PER_VIDEO_KEYS = frozenset({
+    # Top-level keys that are allowed
+    "title",
+    "bio_link",
+    "sponsor_line",
+    "tags",
+    
+    # Teaser keys
+    "teaser.start_seconds",
+    "teaser.duration_seconds",
+    
+    # Teaser overlay keys (excluding the mapping itself)
+    "teaser.overlay.enabled",
+    "teaser.overlay.text",
+    "teaser.overlay.link",
+    "teaser.overlay.font",
+    "teaser.overlay.font_size",
+    "teaser.overlay.font_color",
+    "teaser.overlay.position",
+    "teaser.overlay.x",
+    "teaser.overlay.y",
+    "teaser.overlay.show_seconds",
+    "teaser.overlay.font_file",
+    
+    # Teaser audio keys (excluding the mapping itself)
+    "teaser.audio.enabled",
+    "teaser.audio.clean_youtube",
+    "teaser.audio.highpass_hz",
+    "teaser.audio.lowpass_hz",
+    "teaser.audio.noise_reduction_db",
+    "teaser.audio.noise_floor_db",
+    "teaser.audio.track_noise",
+    "teaser.audio.boost_quiet",
+    "teaser.audio.compress_threshold_db",
+    "teaser.audio.compress_ratio",
+    "teaser.audio.normalize",
+    "teaser.audio.target_loudness",
+    
+    # Teaser audio notch keys (excluding the mapping itself)
+    "teaser.audio.notch.enabled",
+    "teaser.audio.notch.freq_hz",
+    "teaser.audio.notch.width_hz",
+    "teaser.audio.notch.gain_db",
+    
+    # Audio keys (excluding the mapping itself)
+    "audio.enabled",
+    "audio.clean_youtube",
+    "audio.highpass_hz",
+    "audio.lowpass_hz",
+    "audio.noise_reduction_db",
+    "audio.noise_floor_db",
+    "audio.track_noise",
+    "audio.boost_quiet",
+    "audio.compress_threshold_db",
+    "audio.compress_ratio",
+    "audio.normalize",
+    "audio.target_loudness",
+    
+    # Audio notch keys (excluding the mapping itself)
+    "audio.notch.enabled",
+    "audio.notch.freq_hz",
+    "audio.notch.width_hz",
+    "audio.notch.gain_db",
+    
+    # YouTube keys (including both current and legacy spellings)
+    "youtube.category_id",
+    "youtube.privacy_status",
+    "youtube.privacy",
+    "youtube.default_description",
+    "youtube.default_tags",
+    "youtube.made_for_kids",
+    
+    # Captions keys
+    "captions.tiktok",
+    "captions.instagram",
+    
+    # Social keys
+    "social.platforms",
+    "social.first_comment",
+    
+    # TikTok keys
+    "tiktok.post_mode",
+    "tiktok.privacy_level",
+    "tiktok.disable_duet",
+    "tiktok.disable_comment",
+    "tiktok.disable_stitch",
+    "tiktok.cover_timestamp_ms",
+    "tiktok.scopes",
+    
+    # Instagram keys
+    "instagram.media_type",
+    "instagram.share_to_feed",
+    "instagram.ig_user_id",
+    "instagram.caption",
+    "instagram.first_comment",
+})
+
+FORBIDDEN_SECTIONS = frozenset({'paths', 'retries', 'upload_post'})
+
+
+def merge_overrides(base: dict, override: dict) -> dict:
+    """Deep merge two dictionaries, with override taking precedence.
+    
+    Mappings merge key by key, lists and scalars replace.
+    Neither input is mutated.
+    """
+    result = base.copy()
+    for key, value in override.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            # Recursively merge nested dictionaries
+            result[key] = merge_overrides(result[key], value)
+        else:
+            # Replace scalar or list values
+            result[key] = value
+    return result
+
+
+def override_errors(override: dict) -> list[str]:
+    """Validate override dict and return list of error messages.
+    
+    Each error message is a string describing one invalid key path.
+    """
+    errors = []
+    
+    def _flatten_dict(d, parent_key=""):
+        """Flatten a nested dict into dotted key paths."""
+        items = []
+        for k, v in d.items():
+            new_key = f"{parent_key}.{k}" if parent_key else k
+            if isinstance(v, dict):
+                items.extend(_flatten_dict(v, new_key))
+            else:
+                items.append(new_key)
+        return items
+    
+    flattened = _flatten_dict(override)
+    
+    for key in flattened:
+        # Check for forbidden sections
+        first_part = key.split('.')[0]
+        if first_part in FORBIDDEN_SECTIONS:
+            errors.append(f"{key}: not allowed per video")
+            continue
+            
+        # Check for unknown keys
+        if key not in PER_VIDEO_KEYS:
+            errors.append(f"{key}: unknown setting")
+    
+    return errors
+
+
+def title_from(overrides) -> str | None:
+    """Extract title from overrides dict if present."""
+    if not overrides:
+        return None
+    return overrides.get('title')
+
 
 @dataclass
 class OverlayConfig:
@@ -344,7 +503,7 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
     )
 
 
-def load_config(config_path: Path | str | None = None) -> AppConfig:
+def load_config(config_path: Path | str | None = None, overrides=None) -> AppConfig:
     path = Path(config_path) if config_path else DEFAULT_CONFIG_PATH
     if not path.is_file():
         raise FileNotFoundError(
@@ -354,6 +513,16 @@ def load_config(config_path: Path | str | None = None) -> AppConfig:
         raw = yaml.safe_load(fh) or {}
     if not isinstance(raw, dict):
         raise ValueError(f"Config root must be a mapping: {path}")
+    
+    if overrides is not None:
+        # Validate overrides
+        errors = override_errors(overrides)
+        if errors:
+            raise ValueError("Invalid per-video override(s):\n" + "\n".join(errors))
+        
+        # Merge overrides
+        raw = merge_overrides(raw, overrides)
+    
     return _from_dict(raw)
 
 
