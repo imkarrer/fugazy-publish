@@ -10,6 +10,7 @@ from typing import cast
 from fugazy_publish.config import load_config
 from fugazy_publish.sources.folder import FolderSource
 from fugazy_publish.pipeline import publish
+from fugazy_publish.notify import notify_published
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -93,6 +94,7 @@ def main(argv: list[str] | None = None) -> int:
                 
                 # Report success
                 source.report_published(item, result)
+                notify_published(item_config.inbox.notify_webhook, title, result)
                 print(f"Published {item.id}")
                 
             except Exception as e:
