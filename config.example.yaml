@@ -97,3 +97,11 @@ instagram:
 paths:
   credentials_dir: credentials
   output_dir: output
+
+inbox:
+  # Folder to watch for videos (default: empty, must be set)
+  folder: ""
+  # Polling interval in seconds (default: 60)
+  poll_seconds: 60
+  # Webhook URL to notify on publish events (default: empty)
+  notify_webhook: ""

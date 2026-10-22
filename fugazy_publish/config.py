@@ -110,7 +110,7 @@ PER_VIDEO_KEYS = frozenset({
     "instagram.first_comment",
 })
 
-FORBIDDEN_SECTIONS = frozenset({'paths', 'retries', 'upload_post'})
+FORBIDDEN_SECTIONS = frozenset({'paths', 'retries', 'upload_post', 'inbox'})
 
 
 def merge_overrides(base: dict, override: dict) -> dict:
@@ -286,6 +286,13 @@ class InstagramConfig:
 
 
 @dataclass
+class InboxConfig:
+    folder: str = ""
+    poll_seconds: int = 60
+    notify_webhook: str = ""
+
+
+@dataclass
 class PathsConfig:
     output_dir: str = "output"
     credentials_dir: str = "credentials"
@@ -317,6 +324,7 @@ class AppConfig:
     social: SocialConfig = field(default_factory=SocialConfig)
     tiktok: TikTokConfig = field(default_factory=TikTokConfig)
     instagram: InstagramConfig = field(default_factory=InstagramConfig)
+    inbox: InboxConfig = field(default_factory=InboxConfig)
 
 
 def _overlay_from_dict(data: dict[str, Any] | None) -> OverlayConfig:
@@ -412,6 +420,7 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
     tiktok = data.get("tiktok") or {}
     captions = data.get("captions") or {}
     first_comments = upload_post.get("first_comments") or {}
+    inbox = data.get("inbox") or {}
 
     shared_first_comment = str(
         social.get("first_comment")
@@ -499,6 +508,11 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
                 or shared_first_comment
                 or first_comments.get("instagram", "")
             ),
+        ),
+        inbox=InboxConfig(
+            folder=str(inbox.get("folder", "")),
+            poll_seconds=int(inbox.get("poll_seconds", 60)),
+            notify_webhook=str(inbox.get("notify_webhook", "")),
         ),
     )
 
