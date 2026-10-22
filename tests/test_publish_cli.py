@@ -45,8 +45,8 @@ title: Override Title
     assert result == 0
 
 
-def test_overrides_title_wins_over_cli_title(tmp_path):
-    """Test that --title is overridden by override title."""
+def test_overrides_title_wins_over_cli_title(tmp_path, monkeypatch):
+    """Test that --title wins over override title."""
     # Create a minimal config file
     config_content = """
 bio_link: https://lnk.bio/test
@@ -69,7 +69,15 @@ title: Override Title
     video_file = tmp_path / "test_video.mp4"
     video_file.write_text("dummy content")
 
-    # Test that --title is overridden by override title
+    # Mock the publish function to capture what title it receives
+    captured_title = []
+    def mock_publish(video, title, **kwargs):
+        captured_title.append(title)
+        return {"status": "success"}
+
+    monkeypatch.setattr("publish.publish", mock_publish)
+
+    # Test that --title wins over override title
     result = main([
         str(video_file),
         "--config", str(config_file),
@@ -78,8 +86,11 @@ title: Override Title
         "--dry-run"
     ])
 
-    # This should pass without error, and title_from should extract the override title (not CLI)
+    # This should pass without error
     assert result == 0
+    # Verify that the CLI title was actually passed to publish
+    assert len(captured_title) == 1
+    assert captured_title[0] == "CLI Title"
 
 
 def test_overrides_forbidden_keys_exit_2(tmp_path):
@@ -248,3 +259,30 @@ tags:
     ])
 
     assert result == 2
+
+
+def test_no_overrides_still_works(tmp_path):
+    """Test that normal operation without overrides still works."""
+    # Create a minimal config file
+    config_content = """
+bio_link: https://lnk.bio/test
+sponsor_line: Test Sponsor
+tags:
+  - test
+  - video
+"""
+    config_file = tmp_path / "config.yaml"
+    config_file.write_text(config_content)
+
+    # Create a dummy video file
+    video_file = tmp_path / "test_video.mp4"
+    video_file.write_text("dummy content")
+
+    # Test that normal operation works
+    result = main([
+        str(video_file),
+        "--config", str(config_file),
+        "--dry-run"
+    ])
+
+    assert result == 0
