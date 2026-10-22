@@ -15,6 +15,8 @@ from fugazy_publish.pipeline import promote_existing, publish
 
 app = FastAPI(title="Fugazy Publish")
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
 HTML_FORM = """
 <!DOCTYPE html>
 <html lang="en">
@@ -99,10 +101,9 @@ HTML_FORM = """
 def _get_profiles() -> list[str]:
     """Get list of available profile files from project root."""
     profiles = []
-    project_root = Path(__file__).resolve().parent
-    
+
     # Find all config*.yaml files, sort with config.yaml first
-    config_files = list(project_root.glob("config*.yaml"))
+    config_files = list(PROJECT_ROOT.glob("config*.yaml"))
     
     # Sort so that config.yaml comes first
     config_files.sort(key=lambda f: (f.name != "config.yaml", f.name))
@@ -124,14 +125,11 @@ def _validate_profile(profile: str | None) -> Path | None:
     """Validate that a profile exists and return its config path."""
     if not profile or profile == "default":
         return None  # Use default config.yaml
-    
-    project_root = Path(__file__).resolve().parent
-    config_path = project_root / f"config.{profile}.yaml"
-    
-    if not config_path.is_file():
+
+    if profile not in _get_profiles():
         raise HTTPException(status_code=400, detail=f"Profile '{profile}' not found")
-    
-    return config_path
+
+    return PROJECT_ROOT / f"config.{profile}.yaml"
 
 
 def _result_page(status: str, body: str) -> str:
@@ -208,8 +206,9 @@ async def publish_form(
             result = publish(dest, title, config=cfg, dry_run=is_dry)
             body = json.dumps(result, indent=2, default=str)
             status = "OK"
+        except HTTPException:
+            raise
         except ValueError as exc:  # Validation errors (like invalid override or profile)
-            # This should be caught by HTTPException above, but kept for safety
             raise HTTPException(status_code=400, detail=str(exc))
         except Exception as exc:  # noqa: BLE001
             body = str(exc)
@@ -256,8 +255,9 @@ async def promote_form(
         )
         body = json.dumps(result, indent=2, default=str)
         status = "OK"
+    except HTTPException:
+        raise
     except ValueError as exc:  # Validation errors (like invalid override or profile)
-        # This should be caught by HTTPException above, but kept for safety
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:  # noqa: BLE001
         body = str(exc)
