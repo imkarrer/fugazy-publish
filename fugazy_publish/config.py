@@ -520,9 +520,14 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
 def load_config(config_path: Path | str | None = None, overrides=None) -> AppConfig:
     path = Path(config_path) if config_path else DEFAULT_CONFIG_PATH
     if not path.is_file():
-        raise FileNotFoundError(
-            f"Missing {path}. Copy config.example.yaml to config.yaml and edit it."
-        )
+        # Fallback to config.example.yaml if default config.yaml doesn't exist
+        example_path = DEFAULT_CONFIG_PATH.with_name("config.example.yaml")
+        if example_path.is_file():
+            path = example_path
+        else:
+            raise FileNotFoundError(
+                f"Missing {path}. Copy config.example.yaml to config.yaml and edit it."
+            )
     with path.open("r", encoding="utf-8") as fh:
         raw = yaml.safe_load(fh) or {}
     if not isinstance(raw, dict):
