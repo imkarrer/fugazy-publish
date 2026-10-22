@@ -166,7 +166,7 @@ def override_errors(override: dict) -> list[str]:
 
 def title_from(overrides) -> str | None:
     """Extract title from overrides dict if present."""
-    if not overrides:
+    if not isinstance(overrides, dict):
         return None
     return overrides.get('title')
 

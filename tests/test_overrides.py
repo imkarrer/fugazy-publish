@@ -76,3 +76,41 @@ def test_title_from():
     assert title_from({"title": "Test Title"}) == "Test Title"
     assert title_from({}) is None
     assert title_from(None) is None
+
+
+def test_title_from_missing_title():
+    # Test title_from with missing title
+    assert title_from({"other_key": "value"}) is None
+
+
+def test_title_from_non_dict():
+    # Test title_from with non-dict override
+    assert title_from("not_a_dict") is None
+
+
+def test_override_errors_empty_override():
+    # Test override_errors with empty override
+    assert override_errors({}) == []
+
+
+def test_override_errors_nested_allowed_key():
+    # Test override_errors with nested allowed key that isn't a leaf
+    # teaser.overlay is a mapping, but teaser.overlay.text is a leaf
+    errors = override_errors({"teaser": {"overlay": {"text": "test"}}})
+    assert errors == []
+
+
+def test_merge_overrides_list_replace():
+    # Test merge_overrides with list replacement
+    base = {"tags": ["old1", "old2"]}
+    override = {"tags": ["new1", "new2"]}
+    result = merge_overrides(base, override)
+    assert result == {"tags": ["new1", "new2"]}
+
+
+def test_merge_overrides_dict_replace():
+    # Test merge_overrides with dict replacement
+    base = {"audio": {"enabled": True}}
+    override = {"audio": {"enabled": False}}
+    result = merge_overrides(base, override)
+    assert result == {"audio": {"enabled": False}}
