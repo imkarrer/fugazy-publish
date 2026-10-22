@@ -103,6 +103,10 @@ teaser:
     position: bottom_center
 ```
 
+## Inbox Worker
+
+**Full documentation: [docs/inbox.md](docs/inbox.md)** — explains how to set up and run the inbox worker for automated publishing from a folder or Google Sheet.
+
 ## Windows quick start
 
 | Action | How |
