@@ -6,9 +6,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import yaml
 from pathlib import Path
 
-from fugazy_publish.config import load_config
+from fugazy_publish.config import load_config, title_from
 from fugazy_publish.pipeline import publish
 
 
@@ -25,6 +26,12 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=None,
         help="Path to config.yaml (default: project root config.yaml)",
+    )
+    parser.add_argument(
+        "--overrides",
+        type=Path,
+        default=None,
+        help="Path to YAML file with per-video overrides (same format as config.yaml plus optional top-level title)",
     )
     parser.add_argument(
         "--dry-run",
@@ -57,8 +64,25 @@ def main(argv: list[str] | None = None) -> int:
     if args.review and args.dry_run:
         parser.error("--review and --dry-run cannot be combined")
 
-    cfg = load_config(args.config)
-    title = args.title or args.video.stem
+    # Load overrides if provided
+    overrides = None
+    if args.overrides is not None:
+        if not args.overrides.is_file():
+            print(f"Error: Overrides file not found: {args.overrides}", file=sys.stderr)
+            return 2
+        try:
+            with args.overrides.open("r", encoding="utf-8") as fh:
+                overrides = yaml.safe_load(fh) or {}
+        except yaml.YAMLError as exc:
+            print(f"Error: Invalid YAML in overrides file: {exc}", file=sys.stderr)
+            return 2
+
+    try:
+        cfg = load_config(args.config, overrides=overrides)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
+    title = args.title or title_from(overrides) or args.video.stem
 
     try:
         result = publish(
