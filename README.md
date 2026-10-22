@@ -107,6 +107,8 @@ teaser:
 
 **Full documentation: [docs/inbox.md](docs/inbox.md)** — explains how to set up and run the inbox worker for automated publishing from a folder or Google Sheet.
 
+Run the inbox worker with `python inbox.py --config config.yaml --source folder --once`.
+
 ## Windows quick start
 
 | Action | How |
