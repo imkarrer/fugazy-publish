@@ -1,0 +1,89 @@
+# Example config for CVScc profile
+# This would be a copy of the default config with some specific settings for CVScc
+
+bio_link: "https://chippewavalleysportscarclub.com"
+sponsor_line: "Built with Flox: https://flox.dev"
+tags:
+  - "chippewavalley"
+  - "sportscar"
+  - "racing"
+
+paths:
+  output_dir: "output/cvscc"
+  credentials_dir: "credentials/cvscc"
+
+retry:
+  max_attempts: 5
+  initial_seconds: 5.0
+  max_seconds: 300.0
+  min_api_interval_seconds: 5.0
+
+teaser:
+  start_seconds: 0.0
+  duration_seconds: 15.0
+  overlay:
+    enabled: true
+    text: "Full run on YouTube — link in bio"
+    link: "youtube.com/@ChippewaValleySportsCarClub"
+    font: "arial"
+    font_size: 28
+    font_color: "white"
+    position: "bottom"
+    x: "(w-text_w)/2"
+    y: "h-60"
+    show_seconds: 3.0
+    font_file: ""
+
+audio:
+  enabled: true
+  clean_youtube: true
+  highpass_hz: 120
+  lowpass_hz: 0
+  noise_reduction_db: 12.0
+  noise_floor_db: -25.0
+  track_noise: true
+  boost_quiet: true
+  compress_threshold_db: -24.0
+  compress_ratio: 3.0
+  normalize: true
+  target_loudness: -16.0
+  notch:
+    enabled: true
+    freq_hz: 3700.0
+    width_hz: 700.0
+    gain_db: -14.0
+
+youtube:
+  category_id: "2"
+  privacy_status: "public"
+  default_description: "Join us for an exciting race at Chippewa Valley Sports Car Club!"
+  default_tags:
+    - "chippewavalley"
+    - "sportscar"
+    - "racing"
+  made_for_kids: false
+
+social:
+  platforms:
+    - "tiktok"
+    - "instagram"
+  first_comment: "Thanks for watching!"
+
+tiktok:
+  post_mode: "inbox"
+  privacy_level: "PUBLIC_TO_EVERYONE"
+  disable_duet: false
+  disable_comment: false
+  disable_stitch: false
+  cover_timestamp_ms: 1000
+  scopes:
+    - "user.info.basic"
+    - "video.upload"
+    - "video.publish"
+
+instagram:
+  media_type: "REELS"
+  share_to_feed: true
+  ig_user_id: ""
+  caption: "Check out this awesome racing footage!"
+  first_comment: "Thanks for watching!"
