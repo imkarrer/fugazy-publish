@@ -105,3 +105,7 @@ inbox:
   poll_seconds: 60
   # Webhook URL to notify on publish events (default: empty)
   notify_webhook: ""
+  # --source sheet: the Google Sheet to use as the queue (id from its URL).
+  sheet_id: ""
+  # Tab name within that sheet.
+  sheet_name: "Sheet1"

@@ -9,10 +9,12 @@ import sys
 
 from fugazy_publish import instagram_client, tiktok_client
 from fugazy_publish.config import load_config
+from fugazy_publish.sources import sheet
 
 PLATFORMS = {
     "tiktok": tiktok_client.authorize,
     "instagram": instagram_client.authorize,
+    "inbox": sheet.authorize,
 }
 
 
@@ -30,7 +32,8 @@ def main(argv: list[str] | None = None) -> int:
     cfg = load_config(args.config)
     authorize = PLATFORMS[args.platform]
     token = authorize(cfg, port=args.port)
-    safe = {k: v for k, v in token.items() if k not in {"access_token", "refresh_token"}}
+    secret = {"access_token", "refresh_token", "token", "id_token", "client_secret"}
+    safe = {k: v for k, v in token.items() if k not in secret}
     print(f"Authorized {args.platform}.")
     print(json.dumps(safe, indent=2, default=str))
     return 0

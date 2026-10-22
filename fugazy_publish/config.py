@@ -290,6 +290,8 @@ class InboxConfig:
     folder: str = ""
     poll_seconds: int = 60
     notify_webhook: str = ""
+    sheet_id: str = ""
+    sheet_name: str = "Sheet1"
 
 
 @dataclass
@@ -513,6 +515,8 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
             folder=str(inbox.get("folder", "")),
             poll_seconds=int(inbox.get("poll_seconds", 60)),
             notify_webhook=str(inbox.get("notify_webhook", "")),
+            sheet_id=str(inbox.get("sheet_id", "")),
+            sheet_name=str(inbox.get("sheet_name", "Sheet1")),
         ),
     )
 

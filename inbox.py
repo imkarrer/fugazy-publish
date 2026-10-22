@@ -9,6 +9,7 @@ from typing import cast
 
 from fugazy_publish.config import load_config
 from fugazy_publish.sources.folder import FolderSource
+from fugazy_publish.sources import sheet
 from fugazy_publish.pipeline import publish
 from fugazy_publish.notify import notify_published
 
@@ -20,6 +21,12 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=None,
         help="Path to config.yaml (default: project root config.yaml)",
+    )
+    parser.add_argument(
+        "--source",
+        choices=["folder", "sheet"],
+        default="folder",
+        help="Where submissions come from (default: folder)",
     )
     parser.add_argument(
         "--folder",
@@ -37,21 +44,22 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Validate and print planned actions without uploading",
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     # Load configuration
     cfg = load_config(args.config)
-    
-    # Determine folder path
-    folder_path = args.folder or Path(cfg.inbox.folder)
-    if not folder_path.exists():
-        print(f"Error: Folder does not exist: {folder_path}", file=sys.stderr)
-        return 1
-    
+
     # Create source
-    source = FolderSource(folder_path)
-    
+    if args.source == "sheet":
+        source = sheet.create_source(cfg)
+    else:
+        folder_path = args.folder or Path(cfg.inbox.folder)
+        if not folder_path.exists():
+            print(f"Error: Folder does not exist: {folder_path}", file=sys.stderr)
+            return 1
+        source = FolderSource(folder_path)
+
     while True:
         # Print stuck items as warnings
         stuck_items = source.stuck()
